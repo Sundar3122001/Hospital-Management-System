@@ -1,35 +1,28 @@
 package com.example.HospitalManagementSystemApplication.controllers;
 
 import com.example.HospitalManagementSystemApplication.models.Bill;
-import com.example.HospitalManagementSystemApplication.models.Patient;
+import com.example.HospitalManagementSystemApplication.service.BillService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 @RestController
-@RequestMapping("api/v1/bill")
+@RequestMapping("/api/v1/bills")
 public class BillController {
-    @GetMapping
-    public List<Bill> getAllBill(){
-        System.out.println("Fetching the Bills");
-        return null;
-    }
+
+    @Autowired
+    private BillService billService;
+
     @PostMapping
-    public Bill createBill(@RequestBody Bill bill){
-        System.out.println("Creating Bill");
-        return bill;
+    public Bill generateBill(
+            @RequestParam Long appointmentId,
+            @RequestBody Bill bill){
+
+        return billService.generateBill(appointmentId, bill);
     }
+
     @GetMapping("/{id}")
-    public Bill getBillById(@PathVariable Long id){
-        System.out.println("Searching the Bill"+ " " +id);
-        return null;
-    }
-    @DeleteMapping("/{id}")
-    public void deleteBill(@PathVariable Long id){
-        System.out.println("Deleted the Bill"+ " " +id);
-    }
-    @PutMapping("/{id}")
-    public void updateBill(@PathVariable Long id){
-        System.out.println("updating the Bill"+ " " +id);
+    public Bill getBill(@PathVariable Long id){
+        return billService.getBill(id);
     }
 }
-

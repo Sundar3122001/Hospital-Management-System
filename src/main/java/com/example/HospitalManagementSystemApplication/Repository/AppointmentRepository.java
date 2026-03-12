@@ -1,10 +1,9 @@
 package com.example.HospitalManagementSystemApplication.repository;
 
-import com.example.HospitalManagementSystemApplication.models.Patient;
+import com.example.HospitalManagementSystemApplication.models.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PatientRepository extends JpaRepository<Patient, Long> {
-
+public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 }

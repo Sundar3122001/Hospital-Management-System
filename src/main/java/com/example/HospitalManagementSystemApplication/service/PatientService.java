@@ -1,19 +1,14 @@
 package com.example.HospitalManagementSystemApplication.service;
 
-import com.example.HospitalManagementSystemApplication.Repository.PatientRepository;
 import com.example.HospitalManagementSystemApplication.models.Patient;
-import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.example.HospitalManagementSystemApplication.repository.PatientRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
 
 @Service
 public class PatientService {
@@ -21,52 +16,43 @@ public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
-    private static final Logger logger= LoggerFactory.getLogger(PatientService.class);
-
     public Patient createPatient(Patient patient){
-        try{
-            Patient savedPatient = patientRepository.save(patient);
-            logger.info("Creating patient in service layer");
-            return savedPatient;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+        return patientRepository.save(patient);
     }
 
+    public Page<Patient> getAllPatients(int page, int size){
 
-    public Page<Patient> getAllPatient(int page, int size){
-        try{
-            Pageable pageable = PageRequest.of(page, size);
-            logger.info("Fetching all patients from service layer");
-            return patientRepository.findAll(pageable);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+        Pageable pageable = PageRequest.of(page, size);
+
+        return patientRepository.findAll(pageable);
     }
 
     public Patient getPatientById(Long id){
+
         return patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
     }
 
-    public String updatePatientById(Long id, Patient patient){
+    public Patient updatePatient(Long id, Patient patientDetails){
 
-        Patient existingPatient = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
-        existingPatient.setName(patient.getName());
-        existingPatient.setAge(patient.getAge());
-        existingPatient.setGender(patient.getGender());
-        patientRepository.save(existingPatient);
-        return "Patient updated successfully";
-    }
-
-    @Transactional
-    public String deletePatientById(Long id){
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
-        patientRepository.delete(patient);
-        logger.info("Deleting patient with id: {}", id);
-        return "Patient deleted successfully";
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+        patient.setName(patientDetails.getName());
+        patient.setAge(patientDetails.getAge());
+        patient.setPhone(patientDetails.getPhone());
+        patient.setDisease(patientDetails.getDisease());
+        patient.setAddress(patientDetails.getAddress());
+
+        return patientRepository.save(patient);
     }
 
+    public void deletePatient(Long id){
+
+        if(!patientRepository.existsById(id)){
+            throw new RuntimeException("Patient not found");
+        }
+
+        patientRepository.deleteById(id);
+    }
 }
