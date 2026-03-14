@@ -21,8 +21,7 @@ public class BillService {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
-//        Appointment appointment = appointmentRepository.findById(appointmentId)
-//                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
         bill.setAppointment(appointment);
 
         double total = bill.getConsultationFee() + bill.getMedicineCost();
