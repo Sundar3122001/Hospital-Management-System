@@ -1,264 +1,300 @@
-# 🏥 Hospital Management System (Spring Boot)
+# 🏥 Hospital Management System (Spring Boot + JWT + PostgreSQL)
 
-A **Spring Boot REST API** project that manages core hospital operations such as **Doctors, Patients, Appointments, and Billing**.
-This project demonstrates a clean backend architecture using **Spring Boot, Spring Data JPA, Lombok, and PostgreSQL**.
-
----
-
-## 🚀 Features
-
-* Doctor Management (CRUD)
-* Patient Management (CRUD)
-* Appointment Booking
-* Bill Generation
-* Pagination Support
-* RESTful API Design
-* JPA Entity Relationships
+A **secure RESTful backend application** for managing hospital operations such as **patients, doctors, appointments, billing, and services**.
+The system uses **Spring Boot**, **PostgreSQL**, and **JWT-based authentication with Spring Security** to provide a scalable and secure backend.
 
 ---
 
-## 🧱 Project Architecture
+# 🚀 Features
 
-```
+* User Registration and Login
+* JWT-based Authentication and Authorization
+* Secure REST APIs using Spring Security
+* Stateless Session Management
+* Role-based User Structure (ADMIN / DOCTOR / PATIENT)
+* Patient Management
+* Doctor Management
+* Appointment Scheduling
+* Billing and Payment Tracking
+* Hospital Services Management
+* PostgreSQL Database Integration
+* Layered Architecture (Controller → Service → Repository)
+
+---
+
+# 🛠 Tech Stack
+
+## Backend
+
+* Java 17
+* Spring Boot
+* Spring Security
+* JWT (io.jsonwebtoken)
+
+## Database
+
+* PostgreSQL
+* Spring Data JPA
+* Hibernate
+
+## Tools
+
+* Maven
+* Postman
+* Git
+* GitHub
+
+---
+
+# 📁 Project Structure
+
+src/main/java/com/example/HospitalManagementSystemApplication
+
+config
+SecurityConfig
+JwtAuthenticationFilter
+
+controllers
+AuthController
+PatientController
+DoctorController
+AppointmentController
+BillController
+ServiceController
+
+service
+JwtService
+UsersService
+CustomUserDetailsService
+PatientService
+DoctorService
+AppointmentService
+BillService
+ServiceService
+
+repository
+UserRepository
+PatientRepository
+DoctorRepository
+AppointmentRepository
+BillRepository
+ServiceRepository
+
+models
+Users
+Role
+Patient
 Doctor
-   │
-   │
-Appointment ─── Patient
-   │
-   │
-   Bill
-```
-
-### Relationships
-
-* **Appointment → Doctor** : Many-to-One
-* **Appointment → Patient** : Many-to-One
-* **Bill → Appointment** : One-to-One
+Appointment
+Bill
+Service
 
 ---
 
-## 🛠️ Tech Stack
+# 🔐 JWT Authentication Flow
 
-| Technology      | Description                  |
-| --------------- | ---------------------------- |
-| Java 17         | Programming Language         |
-| Spring Boot     | Backend Framework            |
-| Spring Data JPA | ORM for database interaction |
-| PostgreSQL      | Database                     |
-| Lombok          | Reduces boilerplate code     |
-| Maven           | Dependency Management        |
-| IntelliJ IDEA   | IDE                          |
+1. User sends login request with credentials.
+2. Server verifies username and password.
+3. JWT token is generated upon successful authentication.
+4. Client stores the token.
+5. Client sends the token in the Authorization header for protected APIs.
+6. JWT filter validates the token before allowing access to endpoints.
 
----
+Authorization Header Format:
 
-## 📁 Project Structure
-
-```
-HospitalManagementSystem
-│
-├── controllers
-│   ├── DoctorController
-│   ├── PatientController
-│   ├── AppointmentController
-│   └── BillController
-│
-├── service
-│   ├── DoctorService
-│   ├── PatientService
-│   ├── AppointmentService
-│   └── BillService
-│
-├── repository
-│   ├── DoctorRepository
-│   ├── PatientRepository
-│   ├── AppointmentRepository
-│   └── BillRepository
-│
-├── models
-│   ├── Doctor
-│   ├── Patient
-│   ├── Appointment
-│   └── Bill
-│
-└── HospitalManagementSystemApplication
-```
+Authorization: Bearer <JWT_TOKEN>
 
 ---
 
-## ⚙️ API Endpoints
+# 📌 API Endpoints
 
-### 👨‍⚕️ Doctor APIs
+## Authentication
 
-Create Doctor
+Register User
 
-```
-POST /api/v1/doctors
-```
+POST /auth/register
 
-Get All Doctors
+Request Body
 
-```
-GET /api/v1/doctors
-```
+{
+"username": "admin",
+"password": "12345",
+"email": "[admin@gmail.com](mailto:admin@gmail.com)",
+"role": "ADMIN"
+}
 
-Update Doctor
+Login User
 
-```
-PUT /api/v1/doctors/{id}
-```
+POST /auth/login
 
-Delete Doctor
+Request Body
 
-```
-DELETE /api/v1/doctors/{id}
-```
+{
+"username": "admin",
+"password": "12345"
+}
+
+Response
+
+JWT_TOKEN
 
 ---
 
-### 🧑 Patient APIs
+# 👤 Patient APIs
 
 Create Patient
 
-```
-POST /api/v1/patients
-```
+POST /patients
 
 Get All Patients
 
-```
-GET /api/v1/patients
-```
+GET /patients
 
-Update Patient
+Get Patient by ID
 
-```
-PUT /api/v1/patients/{id}
-```
-
-Delete Patient
-
-```
-DELETE /api/v1/patients/{id}
-```
+GET /patients/{id}
 
 ---
 
-### 📅 Appointment APIs
+# 👨‍⚕️ Doctor APIs
+
+Add Doctor
+
+POST /doctors
+
+Get All Doctors
+
+GET /doctors
+
+Get Doctor by ID
+
+GET /doctors/{id}
+
+---
+
+# 📅 Appointment APIs
 
 Create Appointment
 
-```
-POST /api/v1/appointments?patientId={id}&doctorId={id}
-```
-
-Example Request Body
-
-```json
-{
-  "appointmentTime": "2026-03-20T10:30:00",
-  "status": "Scheduled"
-}
-```
+POST /appointments
 
 Get All Appointments
 
-```
-GET /api/v1/appointments
-```
+GET /appointments
+
+Get Appointment by ID
+
+GET /appointments/{id}
 
 ---
 
-### 💳 Bill APIs
+# 💳 Billing APIs
 
-Generate Bill
+Create Bill
 
-```
-POST /api/v1/bills?appointmentId={id}
-```
-
-Example Request Body
-
-```json
-{
-  "consultationFee": 500,
-  "medicineCost": 200,
-  "paymentStatus": "PAID"
-}
-```
+POST /bills
 
 Get All Bills
 
-```
-GET /api/v1/bills
-```
+GET /bills
+
+Get Bill by ID
+
+GET /bills/{id}
 
 ---
 
-## 📊 Example Bill Response
+# 🛠 Service APIs
 
-```json
-{
-  "id": 1,
-  "consultationFee": 500,
-  "medicineCost": 200,
-  "totalAmount": 700,
-  "paymentStatus": "PAID",
-  "appointment": {
-    "id": 1,
-    "appointmentTime": "2026-03-20T10:30:00",
-    "status": "Scheduled"
-  }
-}
-```
+Create Service
+
+POST /services
+
+Get All Services
+
+GET /services
+
+Get Service by ID
+
+GET /services/{id}
 
 ---
 
-## ▶️ Running the Project
+# ⚙️ Setup Instructions
 
-1. Clone the repository
+## 1 Clone the Repository
 
-```
 git clone https://github.com/yourusername/hospital-management-system.git
-```
 
-2. Open in **IntelliJ IDEA**
+---
 
-3. Configure database in `application.properties`
+## 2 Navigate to the Project
 
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/hospital_db
+cd hospital-management-system
+
+---
+
+## 3 Configure Database
+
+Update application.properties
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/hospital_database
 spring.datasource.username=your_username
 spring.datasource.password=your_password
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
-```
 
-4. Run the application
+---
 
-```
-HospitalManagementSystemApplication.java
-```
+## 4 Run the Application
 
-Server starts at:
+mvn spring-boot:run
 
-```
+Application will start at:
+
 http://localhost:8080
-```
 
 ---
 
-## 📌 Future Improvements
+# 🧪 Testing APIs
 
-* DTO Layer
-* Global Exception Handling
-* Validation using `@Valid`
-* Swagger API Documentation
-* Authentication & Authorization (Spring Security)
-* Frontend Integration
+Use **Postman** to test the APIs.
+
+Recommended testing order:
+
+1. Register a user
+2. Login to generate JWT token
+3. Add token in Authorization header
+4. Access protected APIs
+
+Example Header:
+
+Authorization: Bearer JWT_TOKEN
 
 ---
 
-## 👨‍💻 Shanmugasundaram
+# 📚 Key Concepts Demonstrated
 
-Developed as a **Spring Boot Backend Practice Project** to demonstrate REST API design and database relationships.
+* REST API Development using Spring Boot
+* Secure Authentication using JWT
+* Stateless Security Architecture
+* Spring Security Filter Chain
+* Database Integration with Spring Data JPA
+* Layered Backend Architecture
+* Role-based System Design
+
+---
+
+# 👨‍💻 Author
+
+Shanmugasundaram M
+Software Engineer | Backend Developer (Java / Spring Boot)
+
+GitHub: https://github.com/yourusername
+
+---
+
+# ⭐ Support
+
+If you found this project helpful, please give it a ⭐ on GitHub!
